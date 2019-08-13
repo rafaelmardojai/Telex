@@ -8,11 +8,7 @@
         "--share=network",
         "--share=ipc",
         "--socket=x11",
-        "--socket=wayland",
-        "--filesystem=xdg-run/dconf",
-        "--filesystem=~/.config/dconf:ro",
-        "--talk-name=ca.desrt.dconf",
-        "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+        "--socket=wayland"
     ],
     "build-options": {
         "cflags": "-O2 -g",
@@ -40,7 +36,7 @@
             "sources": [
                 {
                     "type": "git",
-                    "url": "file:///home/mardojai/Proyectos/Telex"
+                    "url": "./"
                 }
             ]
         }
