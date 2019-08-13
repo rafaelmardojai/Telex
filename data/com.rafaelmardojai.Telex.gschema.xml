@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="telex">
+	<schema id="com.rafaelmardojai.Telex" path="/com/rafaelmardojai/Telex/">
+	</schema>
+</schemalist>

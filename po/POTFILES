@@ -1,0 +1,7 @@
+data/com.rafaelmardojai.Telex.desktop.in
+data/com.rafaelmardojai.Telex.appdata.xml.in
+data/com.rafaelmardojai.Telex.gschema.xml
+src/window.ui
+src/main.py
+src/window.py
+

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=telex
+Exec=telex
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true
