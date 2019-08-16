@@ -1,6 +1,4 @@
-#!@PYTHON@
-
-# telex.in
+# widgets.py
 #
 # Copyright 2019 Rafael Mardojai CM
 #
@@ -17,26 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
-import signal
-import gettext
+import gi
 
-VERSION = '@VERSION@'
-pkgdatadir = '@pkgdatadir@'
-localedir = '@localedir@'
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
-sys.path.insert(1, pkgdatadir)
-signal.signal(signal.SIGINT, signal.SIG_DFL)
-gettext.install('telex', localedir)
+class DialogRow(Gtk.ListBoxRow):
+    def __init__(self, name):
+        Gtk.ListBoxRow.__init__(self)
 
-if __name__ == '__main__':
-    import gi
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.add(box)
 
-    from gi.repository import Gio
-    resource = Gio.Resource.load(os.path.join(pkgdatadir, 'telex.gresource'))
-    resource._register()
-
-    from telex import main
-    sys.exit(main.main(VERSION))
+        image = Gtk.Image()
+        #image.set_from_file(photo)
+        dialog_name = Gtk.Label(name)
+        box.pack_start(image, False, False, 0)
+        box.pack_start(dialog_name, False, False, 0)
 

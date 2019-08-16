@@ -27,8 +27,11 @@ configure_file(
 
 telex_sources = [
   '__init__.py',
+  'client.py',
   'main.py',
+  'widgets.py',
   'window.py',
+  'about.py',
 ]
 
 install_data(telex_sources, install_dir: moduledir)

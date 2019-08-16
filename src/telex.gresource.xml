@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/com/rafaelmardojai/Telex">
     <file>window.ui</file>
+    <file>about.ui</file>
   </gresource>
 </gresources>

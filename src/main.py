@@ -17,26 +17,53 @@
 
 import sys
 import gi
+import asyncio
+import gbulb
 
 gi.require_version('Gtk', '3.0')
-
 from gi.repository import Gtk, Gio
 
-from .window import TelexWindow
+from .client import TelexClient
 
+from .window import TelexWindow
+from .about import AboutDialog
 
 class Application(Gtk.Application):
-    def __init__(self):
+    def __init__(self, client):
         super().__init__(application_id='com.rafaelmardojai.Telex',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self.client = client
+
+        """
+        App actions
+        """
+        action = Gio.SimpleAction.new("about", None)
+        action.connect("activate", self.on_about)
+        self.add_action(action)
+
+        """
+        App Settings
+        """
+        settings = Gtk.Settings.get_default()
+        settings.set_property("gtk-application-prefer-dark-theme", True)
 
     def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = TelexWindow(application=self)
-        win.present()
+        self.win = self.props.active_window
+        if not self.win:
+            self.win = TelexWindow(application=self, client=self.client)
+        self.win.present()
 
+    def on_about(self, action, param):
+        about_dialog = AboutDialog()
+        about_dialog.set_transient_for(self.win)
+        about_dialog.set_modal(True)
+        about_dialog.present()
 
 def main(version):
-    app = Application()
-    return app.run(sys.argv)
+    gbulb.install(gtk=True)
+
+    loop = asyncio.get_event_loop()
+    client = TelexClient(loop=loop)
+
+    loop.run_forever(application=Application(client=client))
+

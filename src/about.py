@@ -1,6 +1,4 @@
-#!@PYTHON@
-
-# telex.in
+# about.py
 #
 # Copyright 2019 Rafael Mardojai CM
 #
@@ -17,26 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
-import signal
-import gettext
+from gi.repository import Gtk
 
-VERSION = '@VERSION@'
-pkgdatadir = '@pkgdatadir@'
-localedir = '@localedir@'
 
-sys.path.insert(1, pkgdatadir)
-signal.signal(signal.SIGINT, signal.SIG_DFL)
-gettext.install('telex', localedir)
+@Gtk.Template(resource_path='/com/rafaelmardojai/Telex/about.ui')
+class AboutDialog(Gtk.AboutDialog):
+    __gtype_name__ = 'AboutDialog'
 
-if __name__ == '__main__':
-    import gi
-
-    from gi.repository import Gio
-    resource = Gio.Resource.load(os.path.join(pkgdatadir, 'telex.gresource'))
-    resource._register()
-
-    from telex import main
-    sys.exit(main.main(VERSION))
-
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
