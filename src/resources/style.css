@@ -1,0 +1,5 @@
+.right-headerbar {
+  background: @wm_bg_b;
+  border-bottom: 0;
+  border-top-left-radius: 0;
+}

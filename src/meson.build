@@ -1,13 +1,7 @@
+subdir('resources')
+
 pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 moduledir = join_paths(pkgdatadir, 'telex')
-gnome = import('gnome')
-
-gnome.compile_resources('telex',
-  'telex.gresource.xml',
-  gresource_bundle: true,
-  install: true,
-  install_dir: pkgdatadir,
-)
 
 python3 = import('python3')
 
@@ -28,10 +22,12 @@ configure_file(
 telex_sources = [
   '__init__.py',
   'client.py',
+  'settings.py',
   'main.py',
   'widgets.py',
   'window.py',
-  'about.py',
+  'contacts.py',
+  'preferences.py',
 ]
 
 install_data(telex_sources, install_dir: moduledir)
