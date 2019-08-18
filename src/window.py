@@ -19,12 +19,12 @@ import sys
 import asyncio
 import functools
 import inspect
-from gi.repository import GLib, Gtk
+from gi.repository import Gtk, GLib
 
-from telethon import events, utils
+from telethon import events, utils, types
 from telethon.errors import SessionPasswordNeededError
 
-from .widgets import DialogRow
+from .widgets import DialogRow, ProfilePhoto
 
 @Gtk.Template(resource_path='/com/rafaelmardojai/Telex/window.ui')
 class TelexWindow(Gtk.ApplicationWindow):
@@ -33,6 +33,14 @@ class TelexWindow(Gtk.ApplicationWindow):
     main_stack = Gtk.Template.Child()
     header_stack = Gtk.Template.Child()
 
+    # General
+    user_btn = Gtk.Template.Child()
+    user_btn_box = Gtk.Template.Child()
+    me_name = Gtk.Template.Child()
+    me_phone = Gtk.Template.Child()
+
+    dark_switch = Gtk.Template.Child()
+
     # Setup widgets
     setup_stack = Gtk.Template.Child()
     setup_label = Gtk.Template.Child()
@@ -40,22 +48,27 @@ class TelexWindow(Gtk.ApplicationWindow):
     setup_btn = Gtk.Template.Child()
 
     # Chats widgets
+    content_leaflet = Gtk.Template.Child()
+    header_leaflet = Gtk.Template.Child()
+
     dialogs_stack = Gtk.Template.Child()
+    dialogs_side_stack = Gtk.Template.Child()
     dialogs_list = Gtk.Template.Child()
 
-    me_name = Gtk.Template.Child()
-    me_phone = Gtk.Template.Child()
-
-    def __init__(self, client, **kwargs):
+    def __init__(self, client, settings, **kwargs):
         super().__init__(**kwargs)
 
         self.client = client
+        self.settings = settings
+
         self.code = None
         self.password = None
 
-        self.setup_btn.connect("clicked", self.sign_in)
+        #self.setup_btn.connect("clicked", self.sign_in)
 
         self.client.loop.create_task(self.post_init())
+
+        self.dark_switch.set_state(self.settings.get_value("dark-theme"))
 
     def callback(func):
         @functools.wraps(func)
@@ -110,7 +123,21 @@ class TelexWindow(Gtk.ApplicationWindow):
         self.client.loop.create_task(self.load_dialogs())
 
         self.me_name.set_text(utils.get_display_name(me))
-        self.me_phone.set_text(utils.get_display_name(me))
+        self.me_phone.set_text(utils.parse_phone(me.phone))
+
+        """
+        photo_location = me.photo.photo_small
+        input_file = InputFileLocation(
+            volume_id=photo_location.volume_id,
+            local_id=photo_location.local_id,
+            secret=photo_location.secret
+        )
+        file_location = os.path.join('/tmp', 'photo{}.jpg'.format(channel.id))
+        self.client.download_file(input_file, file_location)
+        """
+        image = ProfilePhoto(None)
+        self.user_btn_box.pack_start(image, None, None, 0)
+        self.user_btn_box.child_set_property(image, 'position', 0)
 
         """self.me = me
         self.sign_in_label.configure(text='Signed in')
@@ -126,15 +153,33 @@ class TelexWindow(Gtk.ApplicationWindow):
         dialogs = await self.client.get_dialogs()
 
         for dialog in dialogs:
-            #self._client.get_message_history(dialog.entity, limit=1)[0].message
-
             name = utils.get_display_name(dialog.entity)
-            #photo = await self.client.download_profile_photo(dialog.entity)
-            dialog = DialogRow(name)
-            self.dialogs_list.add(dialog)
-            #dialog.connect("activate", self.load_messages())
-            dialog.show_all()
+            if isinstance(dialog.entity, types.User) and dialog.entity.is_self:
+                name = 'Mensajes Guardados'
 
-        async for message in client.iter_messages(chat):
-            print(message.id, message.text)
+            message = await self.client.get_messages(dialog.entity, limit=1)
+            message = message[0].text
+            message_time = dialog.date
+            #photo = await self.client.download_profile_photo(dialog.entity)
+            photo = None
+
+            dialog_row = DialogRow(name, message, message_time, photo)
+            self.dialogs_list.add(dialog_row)
+            #dialog.connect("activate", self.load_messages())
+
+        self.dialogs_side_stack.set_visible_child_name('list')
+
+        """async for message in client.iter_messages(chat):
+            print(message.id, message.text)"""
+
+    @Gtk.Template.Callback()
+    def _on_dark_switch_state(self, widget, state):
+        """
+            Update view setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        self.settings.set_value("dark-theme", GLib.Variant("b", state))
+        settings = Gtk.Settings.get_default()
+        settings.set_property("gtk-application-prefer-dark-theme", state)
 
