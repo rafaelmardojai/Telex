@@ -1,4 +1,4 @@
-# widgets.py
+# avatar.py
 #
 # Copyright 2019 Rafael Mardojai CM
 #
@@ -15,21 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gi
+from gi.repository import GLib, Gtk, Gio, GdkPixbuf
 
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from .letter_avatar import get_svg_avatar
 
-class DialogRow(Gtk.ListBoxRow):
-    def __init__(self, name):
-        Gtk.ListBoxRow.__init__(self)
+class Avatar(Gtk.Box):
+    def __init__(self, entity, size=48, rounded=True):
+        super().__init__()
 
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.add(box)
+        #TODO use entity
+        #TODO look if entity has photo
 
-        image = Gtk.Image()
-        #image.set_from_file(photo)
-        dialog_name = Gtk.Label(name)
-        box.pack_start(image, False, False, 0)
-        box.pack_start(dialog_name, False, False, 0)
+        image = get_svg_avatar(entity, size)
 
+        loader = GdkPixbuf.PixbufLoader()
+        loader.write(image.encode())
+        loader.close()
+        pixbuf = loader.get_pixbuf()
+
+        self.image = Gtk.Image.new_from_pixbuf(pixbuf)
+        self.pack_start(self.image, None, None, 0)
+
+        Gtk.StyleContext.add_class(self.get_style_context(), "avatar")
+
+        self.show_all()

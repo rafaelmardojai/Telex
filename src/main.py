@@ -18,6 +18,7 @@
 import sys
 import asyncio
 import gbulb
+import inspect
 import gi
 
 gi.require_version('Gtk', '3.0')
@@ -26,11 +27,18 @@ gi.require_version('Handy', '0.0')
 from gi.repository import GObject, GLib, Gio, Gdk, Gtk, Handy
 
 from .client import TelexClient
-
 from .settings import TelexSettings
+
 from .window import TelexWindow
-from .contacts import ContactsDialog
-from .preferences import TelexPreferencesWindow
+from .preferences_window import TelexPreferencesWindow
+from .contacts_dialog import ContactsDialog
+
+def connect_async(self, detailed_signal, handler_async, *args):
+    def handler(self, *args):
+        asyncio.ensure_future(handler_async(self, *args))
+    self.connect(detailed_signal, handler, *args)
+
+GObject.GObject.connect_async = connect_async
 
 class Application(Gtk.Application):
     def __init__(self, client):
@@ -71,6 +79,10 @@ class Application(Gtk.Application):
             {
                 'name': 'preferences',
                 'func': self.on_preferences
+            },
+            {
+                'name': 'logout',
+                'func': self.on_logout
             }
         ]
 
@@ -78,6 +90,10 @@ class Application(Gtk.Application):
             action = Gio.SimpleAction.new(a['name'], None)
             action.connect('activate', a['func'])
             self.add_action(action)
+
+        # Add accelerators
+        self.set_accels_for_action("app.back_to_dialogs", ['<Ctrl>a'])
+
 
         # Load Settings
         settings = Gtk.Settings.get_default()
@@ -119,16 +135,32 @@ class Application(Gtk.Application):
         dialog.present()
 
     def on_preferences(self, action, param):
-        window = TelexPreferencesWindow()
+        window = TelexPreferencesWindow(application=self)
         window.set_transient_for(self.win)
         window.set_modal(True)
         window.present()
+
+    def on_logout(self, action, param):
+        self.client.loop.create_task(logout(self, self.client))
+
+async def logout(app, client):
+    try:
+        await client.log_out()
+    except Exception:
+        pass
+
+    app.quit()
+    main(None)
+
+async def quit(app, client):
+    #TODO
 
 def main(version):
     gbulb.install(gtk=True)
 
     loop = asyncio.get_event_loop()
     client = TelexClient(loop=loop)
+    application = Application(client=client)
 
-    loop.run_forever(application=Application(client=client))
+    loop.run_forever(application, sys.argv)
 

@@ -1,5 +1,13 @@
-.right-headerbar {
+.flat-headerbar {
   background: @wm_bg_b;
   border-bottom: 0;
-  border-top-left-radius: 0;
+}
+
+.message {
+  background: @theme_selected_bg_color;
+  padding: 10px;
+  border-radius: 5px;
+}
+.message label {
+  color: @theme_selected_fg_color;
 }

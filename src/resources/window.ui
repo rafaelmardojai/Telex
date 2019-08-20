@@ -32,6 +32,7 @@
                 <property name="child-transition-type">slide</property>
                 <property name="mode-transition-type">slide</property>
                 <property name="hhomogeneous-folded">True</property>
+                <signal name="notify::folded" handler="_on_headerbar_folded_changed" after="yes" swapped="no"/>
                 <child>
                   <object class="GtkHeaderBar" id="left_header">
                     <property name="visible">True</property>
@@ -103,10 +104,10 @@
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkButton" id="back_btn">
-                            <property name="action_name">app.back</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <signal name="clicked" handler="_back_to_dialogs" swapped="no"/>
                             <child>
                               <object class="GtkImage">
                                 <property name="visible">True</property>
@@ -127,6 +128,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="popover">chat_menu</property>
                         <child>
                           <object class="GtkImage">
                             <property name="visible">True</property>
@@ -166,7 +168,7 @@
                       </packing>
                     </child>
                     <style>
-                      <class name="right-headerbar"/>
+                      <class name="flat-headerbar"/>
                     </style>
                   </object>
                   <packing>
@@ -236,6 +238,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Setup your Telegram account</property>
+                <property name="wrap">True</property>
+                <property name="halign">center</property>
                 <attributes>
                   <attribute name="scale" value="2"/>
                 </attributes>
@@ -251,6 +255,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="transition_type">crossfade</property>
+                <property name="margin_top">20</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -284,6 +289,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Put your phone number</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -310,10 +318,16 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="setup_btn">
-                            <property name="label" translatable="yes">Continue</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="icon_name">go-next-symbolic</property>
+                              </object>
+                            </child>
                             <style>
                               <class name="suggested-action"/>
                             </style>
@@ -351,6 +365,135 @@
           <packing>
             <property name="name">setup</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">center</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Looks like you are new here</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Sign up to Telegram</property>
+                <property name="wrap">True</property>
+                <property name="halign">center</property>
+                <attributes>
+                  <attribute name="scale" value="2"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="margin_top">20</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">First Name</property>
+                    <property name="halign">start</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap_mode">PANGO_WRAP_WORD</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="singup_first">
+                    <property name="visible">True</property>
+                    <property name="max_width_chars">-1</property>
+                    <property name="width_request">200</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_bottom">10</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Last Name (optional)</property>
+                    <property name="halign">start</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap_mode">PANGO_WRAP_WORD</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="singup_last">
+                    <property name="visible">True</property>
+                    <property name="max_width_chars">-1</property>
+                    <property name="width_request">200</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_bottom">10</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_markup">True</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">By continuing you’re agreeing to:</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLinkButton">
+                    <property name="visible">True</property>
+                    <property name="use_underline">True</property>
+                    <property name="label" translatable="yes">Telegram’s Terms of Service</property>
+                    <property name="uri">https://telegram.org/tos</property>
+                    <property name="halign">start</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="singup_btn">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="label" translatable="yes">Sing Up</property>
+                    <property name="margin_top">10</property>
+                    <style>
+                      <class name="suggested-action"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">signup</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -484,32 +627,44 @@
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
+                      <object class="GtkScrolledWindow" id="chat_log_scrolled">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="expand">True</property>
                         <child>
-                          <object class="GtkBox">
+                          <object class="GtkViewport">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <placeholder/>
+                              <object class="GtkBox" id="chat_log">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="expand">True</property>
+                                <property name="orientation">vertical</property>
+                                <property name="margin_left">20</property>
+                                <property name="margin_right">20</property>
+                                <property name="margin_top">20</property>
+                                <property name="margin_bottom">20</property>
+                                <property name="spacing">20</property>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
                             </child>
                           </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
                   <packing>
@@ -525,12 +680,58 @@
           </object>
           <packing>
             <property name="name">dialogs</property>
-            <property name="position">2</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="error_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label"></property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="error_btn">
+                <property name="label"></property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="name">error</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
     </child>
   </template>
+  <object class="HdyHeaderGroup" id="header_group">
+    <headerbars>
+      <headerbar name="left_header"/>
+      <headerbar name="right_header"/>
+    </headerbars>
+  </object>
   <object class="GtkSizeGroup" id="left_pane_size_group">
     <widgets>
       <widget name="left_header"/>
@@ -543,12 +744,6 @@
       <widget name="right_header"/>
       <widget name="dialogs_stack"/>
     </widgets>
-  </object>
-  <object class="HdyHeaderGroup" id="header_group">
-    <headerbars>
-      <headerbar name="left_header"/>
-      <headerbar name="right_header"/>
-    </headerbars>
   </object>
   <object class="GtkPopoverMenu" id="menu">
     <property name="can_focus">False</property>
@@ -662,8 +857,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Contacts</property>
             <property name="action_name">app.contacts</property>
+            <property name="text" translatable="yes">Contacts</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -674,9 +869,9 @@
         <child>
           <object class="GtkModelButton">
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="sensitive">False</property>
             <property name="text" translatable="yes">Calls</property>
           </object>
           <packing>
@@ -833,7 +1028,6 @@
       </object>
       <packing>
         <property name="submenu">main</property>
-        <property name="position">0</property>
       </packing>
     </child>
     <child>
@@ -894,6 +1088,30 @@
       <packing>
         <property name="submenu">new</property>
         <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkPopoverMenu" id="chat_menu">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkBox">
+        <property name="width_request">100</property>
+        <property name="height_request">50</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
       </packing>
     </child>
   </object>

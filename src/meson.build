@@ -24,10 +24,13 @@ telex_sources = [
   'client.py',
   'settings.py',
   'main.py',
-  'widgets.py',
   'window.py',
-  'contacts.py',
-  'preferences.py',
+  'preferences_window.py',
+  'contacts_dialog.py',
+  'widgets_old.py',
+  'letter_avatar.py',
+  'widget_avatar.py',
+  'widget_message.py',
 ]
 
 install_data(telex_sources, install_dir: moduledir)

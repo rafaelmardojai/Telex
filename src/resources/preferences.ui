@@ -3,8 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <requires lib="libhandy" version="0.0"/>
   <template class="TelexPreferencesWindow" parent="HdyPreferencesWindow">
-    <property name="default_height">700</property>
-    <property name="default_width">640</property>
+    <property name="default_height">600</property>
+    <property name="default_width">800</property>
     <property name="width_request">300</property>
     <child>
       <object class="HdyPreferencesPage">
@@ -22,12 +22,6 @@
                 <property name="visible">True</property>
               </object>
             </child>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Search</property>
-                <property name="visible">True</property>
-              </object>
-            </child>
           </object>
         </child>
         <child>
@@ -41,133 +35,50 @@
                 <property name="visible">True</property>
               </object>
             </child>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Pages</property>
-                <property name="visible">True</property>
-              </object>
-            </child>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Groups</property>
-                <property name="visible">True</property>
-              </object>
-            </child>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Preferences</property>
-                <property name="visible">True</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="HdyPreferencesGroup">
-            <property name="title" translatable="yes">Preferences</property>
-            <property name="visible">True</property>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Preferences rows are appended to the list box</property>
-                <property name="visible">True</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <style>
-                  <class name="inline-toolbar"/>
-                </style>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="ellipsize">end</property>
-                    <property name="label" translatable="yes">Other widgets are appended after the list box</property>
-                    <property name="margin">12</property>
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                  </object>
-                </child>
-              </object>
-            </child>
           </object>
         </child>
       </object>
     </child>
-     <child>
+    <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">preferences-system-privacy-symbolic</property>
         <property name="title">Privacy and Security</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
-            <property name="description">Preferences can be searched, do so using one of the following ways:</property>
-            <property name="title">Searching</property>
+            <property name="description">Control your sessions on other devices:</property>
+            <property name="title">Active sesions</property>
             <property name="visible">True</property>
             <child>
               <object class="HdyActionRow">
-                <property name="title" translatable="yes">Activate the search button</property>
+                <property name="title" translatable="yes">Current session</property>
+                <property name="subtitle">Telex</property>
                 <property name="visible">True</property>
-              </object>
-            </child>
-            <child>
-              <object class="HdyPreferencesRow">
-                <property name="title" translatable="yes">Ctrl + F</property>
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkShortcutLabel">
-                    <property name="accelerator">&lt;ctrl&gt;f</property>
-                    <property name="margin">12</property>
+                <child type="action">
+                  <object class="GtkButton" id="back_btn">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Log out</property>
+                    <property name="action_name">app.logout</property>
+                    <style>
+                      <class name="destructive-action"/>
+                    </style>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Directly type your search</property>
-                <property name="visible">True</property>
               </object>
             </child>
           </object>
         </child>
       </object>
     </child>
-     <child>
+    <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">preferences-system-symbolic</property>
         <property name="title">Advanced</property>
         <property name="visible">True</property>
-        <child>
-          <object class="HdyPreferencesGroup">
-            <property name="description">Preferences can be searched, do so using one of the following ways:</property>
-            <property name="title">Searching</property>
-            <property name="visible">True</property>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Activate the search button</property>
-                <property name="visible">True</property>
-              </object>
-            </child>
-            <child>
-              <object class="HdyPreferencesRow">
-                <property name="title" translatable="yes">Ctrl + F</property>
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkShortcutLabel">
-                    <property name="accelerator">&lt;ctrl&gt;f</property>
-                    <property name="margin">12</property>
-                    <property name="visible">True</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="HdyActionRow">
-                <property name="title" translatable="yes">Directly type your search</property>
-                <property name="visible">True</property>
-              </object>
-            </child>
-          </object>
-        </child>
+
       </object>
     </child>
   </template>
