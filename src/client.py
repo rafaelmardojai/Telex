@@ -32,13 +32,13 @@ def get_env(name, message, cast=str):
             time.sleep(1)
 
 
-_PATH = GLib.get_user_data_dir() + "/telex"
 API_ID = get_env('TG_API_ID', 'Enter your API ID: ', int)
 API_HASH = get_env('TG_API_HASH', 'Enter your API hash: ')
+SESION = GLib.get_user_data_dir() + '/telex'
 
 class TelexClient(TelegramClient):
     def __init__(self,
-                 session='telex',
+                 session=SESION,
                  api_id=API_ID,
                  api_hash=API_HASH,
                  **kwargs):
