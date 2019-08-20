@@ -153,6 +153,7 @@ async def logout(app, client):
     main(None)
 
 async def quit(app, client):
+    pass
     #TODO
 
 def main(version):
