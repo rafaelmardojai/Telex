@@ -48,7 +48,7 @@ def _get_color(text):
     return colors[color_index]
 
 
-def get_svg_avatar(text, size):
+def get_svg_avatar(text, size, rounded=True):
 
     initials = 'DA'
 
@@ -59,6 +59,11 @@ def get_svg_avatar(text, size):
             initials = split_text[0][0] + split_text[-1][0]
         else:
             initials = split_text[0][0]
+
+
+    radius = 0
+    if rounded:
+        radius = size
 
 
     style = {
@@ -76,7 +81,7 @@ def get_svg_avatar(text, size):
         'height': str(size),
         'width': str(size),
         'style': _from_dict_to_style(style),
-        'radius': str(size) + 'px',
+        'radius': str(radius) + 'px',
         'font-family': 'sans-serif',
         'text-style': _from_dict_to_style(text_style),
         'text': escape(initials.upper()),

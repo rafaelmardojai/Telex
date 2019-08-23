@@ -23,11 +23,13 @@ class Avatar(Gtk.Box):
     def __init__(self, entity, size=48, rounded=True):
         super().__init__()
 
+        self.size=size
+        self.rounded=rounded
+
         #TODO use entity
         #TODO look if entity has photo
 
-        image = get_svg_avatar(entity, size)
-
+        image = get_svg_avatar(entity, size, rounded)
         loader = GdkPixbuf.PixbufLoader()
         loader.write(image.encode())
         loader.close()
@@ -39,3 +41,12 @@ class Avatar(Gtk.Box):
         Gtk.StyleContext.add_class(self.get_style_context(), "avatar")
 
         self.show_all()
+
+    def change_avatar(self, entity):
+        image = get_svg_avatar(entity, self.size, self.rounded)
+        loader = GdkPixbuf.PixbufLoader()
+        loader.write(image.encode())
+        loader.close()
+        pixbuf = loader.get_pixbuf()
+
+        self.image.set_from_pixbuf(pixbuf)
