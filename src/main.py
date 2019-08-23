@@ -24,11 +24,14 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('Handy', '0.0')
-from gi.repository import GObject, GLib, Gio, Gdk, Gtk, Handy
+from gi.repository import GObject, GLib, Gio, Gdk, Gtk, Handy, Notify
+
+from telethon import events
 
 from .client import TelexClient
 from .settings import TelexSettings
 
+from .app_actions import TelexApplicationActions
 from .window import TelexWindow
 from .preferences_window import TelexPreferencesWindow
 from .contacts_dialog import ContactsDialog
@@ -40,17 +43,23 @@ def connect_async(self, detailed_signal, handler_async, *args):
 
 GObject.GObject.connect_async = connect_async
 
-class Application(Gtk.Application):
+class Application(Gtk.Application, TelexApplicationActions):
     def __init__(self, client):
         super().__init__(application_id='com.rafaelmardojai.Telex',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.client = client
+        self.client.add_event_handler(self.notify, events.NewMessage)
         self.settings = TelexSettings.new()
+        self.window = None
+
+        TelexApplicationActions.__init__(self)
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
         GLib.set_application_name('Telex')
         GLib.set_prgname('Telex')
+
+        Notify.init("Telex")
 
         # Load CSS
         css_provider = Gtk.CssProvider()
@@ -62,99 +71,24 @@ class Application(Gtk.Application):
         # Register LibHandy
         GObject.type_register(Handy.Leaflet)
 
-        # App actions
-        actions = [
-            {
-                'name': 'about',
-                'func': self.on_about
-            },
-            {
-                'name': 'shortcuts',
-                'func': self.on_shortcuts
-            },
-            {
-                'name': 'contacts',
-                'func': self.on_contacts
-            },
-            {
-                'name': 'preferences',
-                'func': self.on_preferences
-            },
-            {
-                'name': 'logout',
-                'func': self.on_logout
-            }
-        ]
-
-        for a in actions:
-            action = Gio.SimpleAction.new(a['name'], None)
-            action.connect('activate', a['func'])
-            self.add_action(action)
-
-        # Add accelerators
-        self.set_accels_for_action("app.back_to_dialogs", ['<Ctrl>a'])
-
-
         # Load Settings
         settings = Gtk.Settings.get_default()
 
-        dark = self.settings.get_value("dark-theme")
-        settings.set_property("gtk-application-prefer-dark-theme", dark)
-
-        #settings.set_property('gtk-application-prefer-dark-theme', True)
+        dark = self.settings.get_value('dark-theme')
+        settings.set_property('gtk-application-prefer-dark-theme', dark)
+        animations = self.settings.get_value('dark-theme')
+        settings.set_property('gtk-enable-animations', animations)
 
     def do_activate(self):
-        self.win = self.props.active_window
-        if not self.win:
-            self.win = TelexWindow(application=self, client=self.client, settings=self.settings)
-        self.win.present()
+        self.window = self.props.active_window
+        if not self.window:
+            self.window = TelexWindow(application=self, client=self.client, settings=self.settings)
+        self.window.connect('delete-event', self.on_close)
+        self.window.present()
 
-    def on_about(self, action, param):
-        dialog = Gtk.Builder.new_from_resource(
-            '/com/rafaelmardojai/Telex/about.ui'
-        ).get_object('about')
-        dialog.set_transient_for(self.win)
-        dialog.set_modal(True)
-        dialog.present()
-        dialog.show_all()
-
-    def on_shortcuts(self, action, param):
-        window = Gtk.Builder.new_from_resource(
-            '/com/rafaelmardojai/Telex/shortcuts.ui'
-        ).get_object('shortcuts')
-        window.props.section_name = 'shortcuts'
-        window.set_transient_for(self.win)
-        window.set_modal(True)
-        window.present()
-        window.show_all()
-
-    def on_contacts(self, action, param):
-        dialog = ContactsDialog()
-        dialog.set_transient_for(self.win)
-        dialog.set_modal(True)
-        dialog.present()
-
-    def on_preferences(self, action, param):
-        window = TelexPreferencesWindow(application=self)
-        window.set_transient_for(self.win)
-        window.set_modal(True)
-        window.present()
-
-    def on_logout(self, action, param):
-        self.client.loop.create_task(logout(self, self.client))
-
-async def logout(app, client):
-    try:
-        await client.log_out()
-    except Exception:
-        pass
-
-    app.quit()
-    main(None)
-
-async def quit(app, client):
-    pass
-    #TODO
+    @property
+    def get_client(self):
+        return self.client
 
 def main(version):
     gbulb.install(gtk=True)
