@@ -9,17 +9,54 @@
     <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">applications-system-symbolic</property>
-        <property name="title">General</property>
+        <property name="title">Behavior</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
             <property name="description" translatable="yes"></property>
             <property name="title" translatable="yes">Notifications</property>
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <child>
+              <object class="HdyActionRow">
+                <property name="title" translatable="yes">Show sender's name</property>
+                <property name="visible">True</property>
+                <child type="action">
+                  <object class="GtkSwitch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyActionRow">
+                <property name="title" translatable="yes">Show message preview</property>
+                <property name="visible">True</property>
+                <child type="action">
+                  <object class="GtkSwitch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
             <child>
               <object class="HdyActionRow">
                 <property name="title" translatable="yes">Play sound</property>
                 <property name="visible">True</property>
+                <child type="action">
+                  <object class="GtkSwitch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="" swapped="no"/>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -37,12 +74,54 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="HdyPreferencesGroup">
+            <property name="description" translatable="yes"></property>
+            <property name="title" translatable="yes">Application</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="HdyActionRow">
+                <property name="title" translatable="yes">Keep running on background</property>
+                <property name="visible">True</property>
+                <child type="action">
+                  <object class="GtkSwitch" id="run_background">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="_on_run_background_switch_state" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyActionRow" id="close_dialog_row">
+                <property name="title" translatable="yes">Show alert dialog when closing window</property>
+                <property name="visible">False</property>
+                <child type="action">
+                  <object class="GtkSwitch" id="close_dialog">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="_on_close_dialog_switch_state" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">preferences-system-privacy-symbolic</property>
-        <property name="title">Privacy and Security</property>
+        <property name="title">Privacy</property>
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="HdyPreferencesPage">
+        <property name="icon_name">channel-secure-symbolic</property>
+        <property name="title">Security</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
@@ -61,7 +140,7 @@
                     <property name="receives_default">True</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Log out</property>
-                    <property name="action_name">app.logout</property>
+                    <signal name="clicked" handler="_on_logout" swapped="no"/>
                     <style>
                       <class name="destructive-action"/>
                     </style>
@@ -78,7 +157,42 @@
         <property name="icon_name">preferences-system-symbolic</property>
         <property name="title">Advanced</property>
         <property name="visible">True</property>
-
+        <child>
+          <object class="HdyPreferencesGroup">
+            <property name="description" translatable="yes"></property>
+            <property name="title" translatable="yes">Performance</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="HdyActionRow">
+                <property name="title" translatable="yes">Enable animations</property>
+                <property name="visible">True</property>
+                <child type="action">
+                  <object class="GtkSwitch" id="animations">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="_on_animations_switch_state" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyActionRow">
+                <property name="title" translatable="yes">Autoplay GIFs</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <child type="action">
+                  <object class="GtkSwitch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
   </template>
