@@ -3,11 +3,15 @@
   border-bottom: 0;
 }
 
-.message {
-  background: @theme_selected_bg_color;
-  padding: 10px;
-  border-radius: 5px;
+.messages-log {
+  background: transparent;
 }
-.message label {
-  color: @theme_selected_fg_color;
+
+.message {
+
+}
+
+.sender-name {
+  color: @theme_selected_bg_color;
+  font-weight: bold;
 }

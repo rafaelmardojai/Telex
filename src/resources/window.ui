@@ -96,6 +96,79 @@
                     <property name="hexpand">True</property>
                     <property name="show_close_button">True</property>
                     <property name="title" translatable="yes">Please select a chat</property>
+                    <child type="title">
+                      <object class="GtkStack" id="header_dialog_stack">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="transition_type">crossfade</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label">Please select a chat</property>
+                            <style>
+                              <class name="title"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="name">select</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </object>
+                          <packing>
+                            <property name="name">loading</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="header_dialog_box">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <property name="halign">start</property>
+                                <child>
+                                  <object class="GtkLabel" id="header_dialog_name">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="label"></property>
+                                    <style>
+                                      <class name="title"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="header_dialog_info">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="label"></property>
+                                    <style>
+                                      <class name="subtitle"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="pack_type">end</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="name">dialog</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkRevealer">
                         <property name="reveal-child" bind-source="header_leaflet" bind-property="folded" bind-flags="sync-create"/>
@@ -120,7 +193,6 @@
                       </object>
                       <packing>
                         <property name="pack_type">start</property>
-                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -195,6 +267,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
+            <property name="valign">center</property>
             <child>
               <object class="GtkSpinner">
                 <property name="visible">True</property>
@@ -204,7 +277,22 @@
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="connection_failed">
+                <property name="visible">False</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Connection to Telegram failed...</property>
+                <property name="wrap">True</property>
+                <property name="margin_top">10</property>
+                <attributes>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
               </packing>
             </child>
           </object>
@@ -627,7 +715,7 @@
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkScrolledWindow" id="chat_log_scrolled">
+                      <object class="GtkScrolledWindow" id="messages_scrolled">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="expand">True</property>
@@ -636,29 +724,20 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkBox" id="chat_log">
+                              <object class="HdyColumn">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="expand">True</property>
-                                <property name="orientation">vertical</property>
-                                <property name="margin_left">20</property>
-                                <property name="margin_right">20</property>
-                                <property name="margin_top">20</property>
-                                <property name="margin_bottom">20</property>
-                                <property name="spacing">20</property>
+                                <property name="maximum_width">800</property>
+                                <property name="linear_growth_width">300</property>
                                 <child>
-                                  <object class="GtkBox">
+                                  <object class="GtkListBox" id="messages_log">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
+                                    <property name="valign">end</property>
+                                    <style>
+                                      <class name="messages-log"/>
+                                    </style>
                                   </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
                                 </child>
                               </object>
                             </child>
@@ -668,7 +747,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="name">chat</property>
+                    <property name="name">messages</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
@@ -680,46 +759,6 @@
           </object>
           <packing>
             <property name="name">dialogs</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">6</property>
-            <child>
-              <object class="GtkLabel" id="error_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label"></property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="error_btn">
-                <property name="label"></property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <style>
-                  <class name="suggested-action"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="name">error</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -999,30 +1038,39 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
+          <object class="GtkBox" id="quit_menu_box">
+            <property name="visible">False</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkModelButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="action_name">app.quit</property>
+                <property name="text" translatable="yes">Quit</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">12</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.about</property>
-            <property name="text" translatable="yes">Quit</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">13</property>
           </packing>
         </child>
       </object>

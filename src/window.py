@@ -20,14 +20,15 @@ import time
 import asyncio
 import functools
 import inspect
-from gi.repository import Gtk, GLib
+from datetime import datetime, timedelta
+from gi.repository import Gtk, GLib, Notify
 
 from telethon import events, utils, types
 from telethon.errors import SessionPasswordNeededError, PasswordHashInvalidError, PhoneNumberUnoccupiedError, PhoneNumberInvalidError
 
 from .widget_avatar import Avatar
-from .widget_message import Message
-from .widgets_old import DialogRow
+from .widget_dialog import Dialog
+from .widget_message import Message, DayPrint
 
 @Gtk.Template(resource_path='/com/rafaelmardojai/Telex/window.ui')
 class TelexWindow(Gtk.ApplicationWindow):
@@ -35,17 +36,16 @@ class TelexWindow(Gtk.ApplicationWindow):
 
     main_stack = Gtk.Template.Child()
     header_stack = Gtk.Template.Child()
-    error_label = Gtk.Template.Child()
-    error_btn = Gtk.Template.Child()
+
+    connection_failed = Gtk.Template.Child()
 
     # General
-    left_header = Gtk.Template.Child()
-    right_header = Gtk.Template.Child()
-
     user_btn = Gtk.Template.Child()
     user_btn_box = Gtk.Template.Child()
     me_name = Gtk.Template.Child()
     me_phone = Gtk.Template.Child()
+
+    quit_menu_box = Gtk.Template.Child()
 
     dark_switch = Gtk.Template.Child()
 
@@ -63,11 +63,19 @@ class TelexWindow(Gtk.ApplicationWindow):
     content_leaflet = Gtk.Template.Child()
     header_leaflet = Gtk.Template.Child()
 
+    left_header = Gtk.Template.Child()
+    right_header = Gtk.Template.Child()
+
+    header_dialog_stack = Gtk.Template.Child()
+    header_dialog_box = Gtk.Template.Child()
+    header_dialog_name = Gtk.Template.Child()
+    header_dialog_info = Gtk.Template.Child()
+
     dialogs_stack = Gtk.Template.Child()
     dialogs_side_stack = Gtk.Template.Child()
     dialogs_list = Gtk.Template.Child()
-    chat_log = Gtk.Template.Child()
-    chat_log_scrolled = Gtk.Template.Child()
+    messages_log = Gtk.Template.Child()
+    messages_scrolled = Gtk.Template.Child()
 
     def __init__(self, client, settings, **kwargs):
         super().__init__(**kwargs)
@@ -75,6 +83,7 @@ class TelexWindow(Gtk.ApplicationWindow):
         self.client = client
         self.settings = settings
 
+        self.first = True
         self.code = None
         self.password = None
         self.singup = None
@@ -82,10 +91,15 @@ class TelexWindow(Gtk.ApplicationWindow):
         self.setup_btn.connect_async('clicked', self.sign_in)
         self.setup_entry.connect_async('activate', self.sign_in)
         self.singup_btn.connect_async('clicked', self.sign_in)
+        self.dark_switch.set_state(self.settings.get_value('dark-theme'))
+
+        if self.settings.get_value('run-background'):
+            self.quit_menu_box.props.visible = True
+
+        self.header_dialog_image = Avatar('', 32)
+        self.header_dialog_box.pack_start(self.header_dialog_image, None, True, 0)
 
         self.client.loop.create_task(self.post_init())
-
-        self.dark_switch.set_state(self.settings.get_value('dark-theme'))
 
     """
     def callback(func):
@@ -100,23 +114,42 @@ class TelexWindow(Gtk.ApplicationWindow):
     """
 
     async def post_init(self):
-        try:
-            await self.client.connect()
-        except Exception as e:
-            self.error_label.set_text('Failed to connect, try later.')
-            self.error_btn.set_label('Try again')
-            self.error_btn.connect_async('clicked', self.load_dialogs())
 
-            self.main_stack.set_visible_child_name('error')
-            return
+        while not self.client.is_connected():
+            try:
+                await self.client.connect()
+            except Exception as e:
+                print('Failed to connect', e, file=sys.stderr)
+                self.connection_failed.props.visible = True # Show error message on startup
+                await asyncio.sleep(0.5)
 
-        await self.client.connect()
+        self.first = False
+        self.client.loop.create_task(self.check_update())
 
+        self.client.add_event_handler(self.on_message, events.NewMessage)
         if await self.client.is_user_authorized():
             self.set_signed_in(await self.client.get_me())
         else:
             self.main_stack.set_visible_child_name('setup')
             self.setup_stack.set_visible_child_name('entry')
+
+    async def on_message(self, event):
+        Notify.init("App Name")
+        Notify.Notification.new("Hi").show()
+
+    async def check_update(self):
+        star = 0
+        while True:
+            if not self.client.is_connected():
+                try:
+                    print('Conecting again...')
+                    await self.client.connect()
+                except Exception as e:
+                    print('Failed to connect', e, file=sys.stderr)
+            print('Checking' + str(star))
+            star += 1
+            await asyncio.sleep(1)
+
 
     async def sign_in(self, event=None):
         self.setup_stack.set_visible_child_name('loading')
@@ -168,7 +201,6 @@ class TelexWindow(Gtk.ApplicationWindow):
                 return
 
 
-
     def set_signed_in(self, me):
         self.main_stack.set_visible_child_name('dialogs')
         self.header_stack.set_visible_child_name('dialogs')
@@ -192,60 +224,79 @@ class TelexWindow(Gtk.ApplicationWindow):
         self.user_btn_box.pack_start(image, None, None, 0)
         self.user_btn_box.child_set_property(image, 'position', 0)
 
-        """self.me = me
-        self.sign_in_label.configure(text='Signed in')
-        self.sign_in_entry.configure(state=tkinter.NORMAL)
-        self.sign_in_entry.delete(0, tkinter.END)
-        self.sign_in_entry.insert(tkinter.INSERT, utils.get_display_name(me))
-        self.sign_in_entry.configure(state=tkinter.DISABLED)
-        self.sign_in_button.configure(text='Log out')
-        self.chat.focus()
-        """
-
     async def load_dialogs(self):
         dialogs = await self.client.get_dialogs()
 
         for dialog in dialogs:
-            name = utils.get_display_name(dialog.entity)
-            if isinstance(dialog.entity, types.User) and dialog.entity.is_self:
-                name = 'Mensajes Guardados'
-
-            message = await self.client.get_messages(dialog.entity, limit=1)
-            message = message[0].text
-            message_time = dialog.date
-            #photo = await self.client.download_profile_photo(dialog.entity)
-            photo = None
-
-            dialog_row = DialogRow(dialog.entity, name, message, message_time, photo)
+            dialog_row = Dialog(dialog)
             self.dialogs_list.add(dialog_row)
 
         self.dialogs_side_stack.set_visible_child_name('list')
         self.dialogs_list.connect_async("row-selected", self.load_messages)
 
-    def on_dialog_row_active(self, list, row):
-        self.content_leaflet.set_visible_child_name('dialog-pane')
-        self.dialogs_stack.set_visible_child_name('loading')
-
     async def load_messages(self, list, row):
         if not row:
             return
 
+        self.info_text = ''
+        self.show_avatar = False
+        self.show_header = True
+        self.show_name = True
+        self.from_id = None
+        self.date = datetime.today()
+
+        if row.dialog.is_group:
+            self.show_avatar = True
+        if row.dialog.is_channel:
+            self.show_name = False
+        if row.dialog.is_group or row.dialog.is_channel:
+            self.info_text = 'Members: ' + str(row.entity.participants_count)
+        elif row.dialog.is_user:
+            self.info_text = 'Last seen: '
+
         self.content_leaflet.set_visible_child_name('dialog-pane')
         self.dialogs_stack.set_visible_child_name('loading')
+        self.header_dialog_stack.set_visible_child_name('loading')
 
-        children = self.chat_log.get_children()
+        children = self.messages_log.get_children()
         for child in children:
-            self.chat_log.remove(child)
+            self.messages_log.remove(child)
 
-        for message in await self.client.get_messages(row.entity, 20):
+        for message in reversed(await self.client.get_messages(row.entity, 100)):
+            if self.from_id == message.from_id:
+                self.show_header = False
+                self.show_avatar = False
+            self.from_id = message.from_id
+
+            if self.date.date() < message.date.date():
+                day = DayPrint(message.date)
+                self.messages_log.add(day)
+                self.show_header = True
+
+            minutes_date = self.date + timedelta(minutes=10)
+            if minutes_date.date() < message.date.date():
+                self.show_header = True
+
+            self.date = message.date
+
             sender = await message.get_sender()
-            msg = Message(message.text, sender, message.out)
-            self.chat_log.pack_end(msg, None, None, 0)
-            self.chat_log.show_all()
+            msg = Message(message, sender, self.show_avatar, self.show_header, self.show_name)
+            self.messages_log.add(msg)
 
-        adjustment = self.chat_log_scrolled.get_vadjustment()
+            self.show_header = True
+            if row.dialog.is_group:
+                self.show_avatar = True
+
+        self.messages_log.show_all()
+        adjustment = self.messages_scrolled.get_vadjustment()
         adjustment.set_value(adjustment.get_upper())
-        self.dialogs_stack.set_visible_child_name('chat')
+
+        self.header_dialog_name.set_text(row.dialog.name)
+        self.header_dialog_info.set_text(self.info_text)
+        self.header_dialog_image.change_avatar(row.dialog.name)
+
+        self.header_dialog_stack.set_visible_child_name('dialog')
+        self.dialogs_stack.set_visible_child_name('messages')
 
     @Gtk.Template.Callback()
     def _back_to_dialogs(self, widget):
@@ -253,6 +304,7 @@ class TelexWindow(Gtk.ApplicationWindow):
         self.dialogs_list.unselect_all()
         if not self.content_leaflet.props.folded:
             self.dialogs_stack.set_visible_child_name('select')
+            self.header_dialog_stack.set_visible_child_name('select')
 
     @Gtk.Template.Callback()
     def _on_headerbar_folded_changed(self, leaflet, folded):
@@ -264,6 +316,7 @@ class TelexWindow(Gtk.ApplicationWindow):
 
         if not self.dialogs_list.get_selected_row():
             self.dialogs_stack.set_visible_child_name('select')
+            self.header_dialog_stack.set_visible_child_name('select')
 
     @Gtk.Template.Callback()
     def _on_dark_switch_state(self, widget, state):
