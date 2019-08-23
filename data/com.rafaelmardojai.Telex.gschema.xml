@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="telex">
 	<schema id="com.rafaelmardojai.Telex" path="/com/rafaelmardojai/Telex/">
+	  <key type="b" name="run-background">
+        <default>true</default>
+        <summary>Run on background</summary>
+        <description></description>
+    </key>
+	  <key type="b" name="close-dialog">
+        <default>true</default>
+        <summary>Show dialog on close</summary>
+        <description></description>
+    </key>
 	  <key type="b" name="dark-theme">
         <default>false</default>
         <summary>Use dark theme</summary>
+        <description></description>
+    </key>
+	  <key type="b" name="animations">
+        <default>true</default>
+        <summary>Enable animations</summary>
         <description></description>
     </key>
 	</schema>
