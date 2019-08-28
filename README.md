@@ -10,7 +10,7 @@
 
 ![Screenshot](data/screenshots/screenshot.png)
 
-# Advices
+# ADVICES
 THIS IS PROOF OF CONCEPT SOFTWARE FAR FROM USABLE.
 
 PLEASE DON'T OPEN ISSUES FOR THINGS WE ALL KNOW ARE BROKEN.
@@ -22,8 +22,8 @@ CURRENT CODE IS SHITTY AND DIRTY.
 ## Installation
 This app is written to be Flatpak only. The easiest way to test is cloning this repo with **GNOME Builder** and run it from there.
 
-## Runing
-Telex needs Telegram API ID and hash to work, currently you need to provide you own:
+## Running
+Telex needs Telegram API ID and hash to work, currently you need to provide your own.
  
 * Login to your [Telegram account](https://my.telegram.org/) with the phone number of the developer account to use.
 * Click under API Development tools.
