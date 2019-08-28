@@ -8,7 +8,9 @@
         "--share=network",
         "--share=ipc",
         "--socket=x11",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--talk-name=org.freedesktop.Notifications",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "build-options": {
         "cflags": "-O2 -g",
