@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import re
+from datetime import datetime, timezone
 from gi.repository import Gtk, Pango
 
 from telethon import events, utils, types
@@ -22,7 +24,7 @@ from telethon import events, utils, types
 from .widget_avatar import Avatar
 
 class Message(Gtk.ListBoxRow):
-    def __init__(self, message, sender, avatar=False, header=True, name=True):
+    def __init__(self, message, sender, attach=False):
         """
         message (Message)
         sender (sender)
@@ -30,57 +32,93 @@ class Message(Gtk.ListBoxRow):
         header (bool) - Show header (sender name & message date)
         """
         super().__init__()
+        message.client.parse_mode = 'html'
 
+        self.date = message.date.replace(tzinfo=timezone.utc).astimezone(tz=None)
         text = str(message.text)
         if message.media:
             text += '({}) '.format(message.media.__class__.__name__)
 
         Gtk.StyleContext.add_class(self.get_style_context(), 'message')
-        #self.set_activatable(False)
+        self.set_activatable(False)
         self.set_selectable(False)
-        self.props.margin_bottom = 20
+        if not attach:
+            self.props.margin_top = 6
+
+        halign = Gtk.Align.START
+        if message.out:
+            halign = Gtk.Align.END
 
         # Main message box
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         self.add(box)
 
-        if avatar:
-            self.avatar = Avatar(utils.get_display_name(sender), 32)
-            self.avatar.props.valign=Gtk.Align.START
+
+        self.avatar = Avatar(utils.get_display_name(sender), 32)
+        self.avatar.props.valign=Gtk.Align.START
+        if message.is_group and not attach:
             box.pack_start(self.avatar, None, None, 0)
 
-        message_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, halign=Gtk.Align.FILL)
+        message_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, halign=halign)
+        Gtk.StyleContext.add_class(message_box.get_style_context(), 'message-bubble')
+        if message.out:
+            Gtk.StyleContext.add_class(message_box.get_style_context(), 'message-bubble-me')
         box.pack_start(message_box, True, True, 0)
+        if message.out:
+            message_box.props.margin_left = 40
+            box.child_set_property(message_box, 'position', 0)
+        else:
+            message_box.props.margin_right = 40
+            ...
 
-        if header:
-            header_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-            if name:
-                sender_name = Gtk.Label(utils.get_display_name(sender), halign=Gtk.Align.START)
+        if not attach:
+            header_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, halign=halign, spacing=6)
+            if not message.is_channel:
+                sender_name = Gtk.Label(utils.get_display_name(sender))
                 Gtk.StyleContext.add_class(sender_name.get_style_context(), 'sender-name')
-                header_box.pack_start(sender_name, True, True, 0)
-            time = Gtk.Label('TIME')
+                header_box.pack_start(sender_name, None, None, 0)
+            time = Gtk.Label(self.date.strftime('%H:%M'))
             Gtk.StyleContext.add_class(time.get_style_context(), 'dim-label')
-            header_box.pack_end(time, None, None, 0)
+            header_box.pack_start(time, None, None, 0)
+            if message.views:
+                views = Gtk.Label(str(message.views))
+                Gtk.StyleContext.add_class(time.get_style_context(), 'dim-label')
+                header_box.pack_start(views, None, None, 0)
             message_box.pack_start(header_box, True, None, 0)
 
-        text_box = Gtk.Box()
+        text_box = Gtk.Box(halign=halign)
         message_box.pack_start(text_box, True, True, 0)
-        Gtk.StyleContext.add_class(text_box.get_style_context(), 'message-text')
-        self.text = Gtk.Label(text, halign=Gtk.Align.START, xalign=0, yalign=0)
-        text_box.pack_start(self.text, True, True, 0)
+
+        if attach and message.is_group:
+            if message.out:
+                message_box.props.margin_right = 42
+            else:
+                message_box.props.margin_left = 42
+
+        self.text = Gtk.Label(to_pango_markup(text), halign=halign, xalign=0, yalign=0)
+        self.text.set_use_markup(True)
         self.text.set_line_wrap(True)
         self.text.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
         self.text.set_selectable(True)
+        text_box.pack_start(self.text, True, True, 0)
 
 class DayPrint(Gtk.ListBoxRow):
     def __init__(self, date):
         super().__init__()
+        self.set_selectable(False)
+        self.set_activatable(False)
+        self.props.margin_top = 20
 
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, margin_top = 6, margin_bottom = 6)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, halign=Gtk.Align.CENTER, margin_top = 6, margin_bottom = 6)
         self.add(box)
         label = Gtk.Label(date.strftime("%m/%d/%Y"))
-        Gtk.StyleContext.add_class(label.get_style_context(), 'title')
+        Gtk.StyleContext.add_class(label.get_style_context(), 'day-title')
 
         box.pack_start(label, True, True, 0)
-        self.set_selectable(False)
-        self.props.margin_bottom = 20
+
+def to_pango_markup(value):
+        value.replace("<strong>", "<b>")
+        value.replace("</strong>", "</b>")
+        value.replace("<em>", "<i>")
+        value.replace("</em>", "</i>")
+        return value

@@ -31,7 +31,6 @@ def get_env(name, message, cast=str):
             print(e, file=sys.stderr)
             time.sleep(1)
 
-
 API_ID = get_env('TG_API_ID', 'Enter your API ID: ', int)
 API_HASH = get_env('TG_API_HASH', 'Enter your API hash: ')
 SESION = GLib.get_user_data_dir() + '/telex'

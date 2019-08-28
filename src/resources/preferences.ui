@@ -66,10 +66,25 @@
             <property name="description" translatable="yes"></property>
             <property name="title" translatable="yes">Chat</property>
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <child>
+              <object class="HdyComboRow">
+                <property name="title" translatable="yes">Send message</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
             <child>
               <object class="HdyActionRow">
-                <property name="title" translatable="yes">Messages</property>
+                <property name="title" translatable="yes">Spell checking</property>
                 <property name="visible">True</property>
+                <child type="action">
+                  <object class="GtkSwitch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="" swapped="no"/>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -116,6 +131,25 @@
         <property name="icon_name">preferences-system-privacy-symbolic</property>
         <property name="title">Privacy</property>
         <property name="visible">True</property>
+        <child>
+          <object class="HdyPreferencesGroup">
+
+            <property name="visible">True</property>
+            <child>
+                <object class="HdyExpanderRow" id="expander_row">
+                  <property name="title" translatable="yes">Expander row</property>
+                  <property name="visible">True</property>
+                  <child>
+                    <object class="GtkLabel">
+                      <property name="label" translatable="yes">Hello, world!</property>
+                      <property name="margin">12</property>
+                      <property name="visible">True</property>
+                    </object>
+                  </child>
+                </object>
+              </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>

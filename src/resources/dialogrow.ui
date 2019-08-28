@@ -134,4 +134,20 @@
       </object>
     </child>
   </template>
+  <object class="GtkWindow">
+    <property name="can_focus">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkComboBoxText">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <items>
+          <item id="gfdgds" translatable="yes">gfdsgdfgdgd</item>
+          <item id="gdgs" translatable="yes">gfdgsdgfgdf</item>
+        </items>
+      </object>
+    </child>
+  </object>
 </interface>

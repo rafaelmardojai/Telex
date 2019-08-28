@@ -1,0 +1,50 @@
+{
+    "name": "telethon",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python3 setup.py install --prefix=/app --root=/"
+    ],
+    "sources": [{
+        "type": "archive",
+        "url": "https://files.pythonhosted.org/packages/6c/9b/8668c74decf4c5e8cec3d73794f89947842a39b9e127bf7e7dfeddd8ca5b/Telethon-1.9.0.tar.gz",
+        "sha256": "a8797ad5bfee2b350cfc9b73cbb30fc19c8f73c0db42471e0df1371b1a269edc"
+    }],
+    "modules": [
+        {
+            "name": "pyaes",
+            "buildsystem": "simple",
+            "build-commands": [
+                "python3 setup.py install --prefix=/app --root=/"
+            ],
+            "sources": [{
+                "type": "archive",
+                "url": "https://files.pythonhosted.org/packages/44/66/2c17bae31c906613795711fc78045c285048168919ace2220daa372c7d72/pyaes-1.6.1.tar.gz",
+                "sha256": "02c1b1405c38d3c370b085fb952dd8bea3fadcee6411ad99f312cc129c536d8f"
+            }]
+        },
+        {
+            "name": "pyasn1",
+            "buildsystem": "simple",
+            "build-commands": [
+                "python3 setup.py install --prefix=/app --root=/"
+            ],
+            "sources": [{
+                "type": "archive",
+                "url": "https://files.pythonhosted.org/packages/e3/12/dfffc84b783e280e942409d6b651fe4a5a746433c34589da7362db2c99c6/pyasn1-0.4.6.tar.gz",
+                "sha256": "b773d5c9196ffbc3a1e13bdf909d446cad80a039aa3340bcad72f395b76ebc86"
+            }]
+        },
+        {
+            "name": "rsa",
+            "buildsystem": "simple",
+            "build-commands": [
+                "python3 setup.py install --prefix=/app --root=/"
+            ],
+            "sources": [{
+                "type": "archive",
+                "url": "https://files.pythonhosted.org/packages/cb/d0/8f99b91432a60ca4b1cd478fd0bdf28c1901c58e3a9f14f4ba3dba86b57f/rsa-4.0.tar.gz",
+                "sha256": "1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"
+            }]
+        }
+    ]
+}

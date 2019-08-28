@@ -37,6 +37,6 @@ if __name__ == '__main__':
     resource = Gio.Resource.load(os.path.join(pkgdatadir, 'telex.gresource'))
     resource._register()
 
-    from telex import main
-    sys.exit(main.main(VERSION))
+    from telex import application
+    sys.exit(application.main(VERSION))
 

@@ -1,6 +1,11 @@
 .flat-headerbar {
-  background: @wm_bg_b;
+  background: @theme_bg_color;
   border-bottom: 0;
+  border-top-left-radius: 0;
+}
+
+.error-label {
+  color: @error_color;
 }
 
 .messages-log {
@@ -11,7 +16,46 @@
 
 }
 
+.message-bubble {
+  background-color: @theme_base_color;
+  border-radius: 5px;
+  border-bottom: 3px solid @borders;
+  padding: 6px;
+}
+/*.message-bubble-me {
+  color: @theme_selected_fg_color;
+  background-color: #99c1f1;
+  border-color: #3584e4;
+}*/
+
+.day-title {
+  font-weight: bold;
+  background-color: @theme_base_color;
+  border-radius: 5px;
+  padding: 6px;
+}
+
+
 .sender-name {
-  color: @theme_selected_bg_color;
   font-weight: bold;
 }
+
+.message-input-box {
+  background-color: @theme_base_color;
+}
+
+.message-input {
+  background-color: @theme_base_color;
+  border-radius: 3px;
+  border: 1px solid @borders;
+  padding: 6px;
+}
+
+.message-input-focused {
+  border: 2px solid @theme_selected_bg_color;
+  padding: 5px;
+}
+
+/*.soft-undershoot undershoot.top {
+  background-image: linear-gradient(to bottom, @theme_bg_color, transparent);
+}*/

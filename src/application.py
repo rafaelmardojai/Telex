@@ -24,14 +24,16 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('Handy', '0.0')
-from gi.repository import GObject, GLib, Gio, Gdk, Gtk, Handy, Notify
+gi.require_version('Gspell', '1')
+gi.require_version('Notify', '0.7')
+from gi.repository import GObject, GLib, Gio, Gdk, Gtk, Handy
 
 from telethon import events
 
 from .client import TelexClient
 from .settings import TelexSettings
 
-from .app_actions import TelexApplicationActions
+from .application_actions import TelexApplicationActions
 from .window import TelexWindow
 from .preferences_window import TelexPreferencesWindow
 from .contacts_dialog import ContactsDialog
@@ -43,7 +45,7 @@ def connect_async(self, detailed_signal, handler_async, *args):
 
 GObject.GObject.connect_async = connect_async
 
-class Application(Gtk.Application, TelexApplicationActions):
+class TelexApplication(Gtk.Application, TelexApplicationActions):
     def __init__(self, client):
         super().__init__(application_id='com.rafaelmardojai.Telex',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
@@ -58,8 +60,6 @@ class Application(Gtk.Application, TelexApplicationActions):
         Gtk.Application.do_startup(self)
         GLib.set_application_name('Telex')
         GLib.set_prgname('Telex')
-
-        Notify.init("Telex")
 
         # Load CSS
         css_provider = Gtk.CssProvider()
@@ -76,14 +76,13 @@ class Application(Gtk.Application, TelexApplicationActions):
 
         dark = self.settings.get_value('dark-theme')
         settings.set_property('gtk-application-prefer-dark-theme', dark)
-        animations = self.settings.get_value('dark-theme')
+        animations = self.settings.get_value('animations')
         settings.set_property('gtk-enable-animations', animations)
 
     def do_activate(self):
         self.window = self.props.active_window
         if not self.window:
             self.window = TelexWindow(application=self, client=self.client, settings=self.settings)
-        self.window.connect('delete-event', self.on_close)
         self.window.present()
 
     @property
@@ -95,7 +94,7 @@ def main(version):
 
     loop = asyncio.get_event_loop()
     client = TelexClient(loop=loop)
-    application = Application(client=client)
+    application = TelexApplication(client=client)
 
     loop.run_forever(application, sys.argv)
 

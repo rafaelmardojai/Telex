@@ -47,6 +47,10 @@ class TelexApplicationActions:
                 'func': self.on_preferences
             },
             {
+                'name': 'show',
+                'func': self.on_show
+            },
+            {
                 'name': 'quit',
                 'func': self.on_quit
             }
@@ -59,6 +63,9 @@ class TelexApplicationActions:
 
         # Add accelerators
         self.set_accels_for_action('app.back_to_dialogs', ['<Ctrl>a'])
+
+    def on_show(self, action, param):
+        self.window.present()
 
     def on_close(self, widget, event):
         background = self.settings.get_value('run-background')
@@ -85,21 +92,22 @@ class TelexApplicationActions:
                 if response == Gtk.ResponseType.NO:
                     if check.get_active():
                         self.settings.set_value('run-background', GLib.Variant('b', False))
-                    self.quit()
+                    self.on_quit()
             else:
                 return widget.hide_on_delete()
         else:
-            self.quit()
+            self.on_quit()
 
-    def on_quit(self, action, param):
+    def on_quit(self, action=None, param=None):
         self.client.loop.create_task(self.__quit())
 
     async def __quit(self):
         try:
             await self.client.disconnect()
-            self.quit()
         except Exception:
-            self.quit()
+            pass
+
+        self.quit()
 
     def on_about(self, action, param):
         dialog = Gtk.Builder.new_from_resource(
