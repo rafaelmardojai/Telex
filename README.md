@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="data/icons/com.rafaelmardojai.Telex.svg" alt="Telex" width="100" height="100"/><br>
+	<img src="data/icons/com.rafaelmardojai.Telex.svg" alt="Telex" width="128" height="128"/><br>
  Telex
 </h1>
 
