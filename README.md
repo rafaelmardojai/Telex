@@ -3,7 +3,7 @@
  Telex
 </h1>
 
-[![GitHub](https://img.shields.io/github/license/rafaelmardojai/firefox-gnome-theme.svg)](https://github.com/rafaelmardojai/Telex/blob/master/COPYING)
+[![GitHub](https://img.shields.io/github/license/rafaelmardojai/Telex)](https://github.com/rafaelmardojai/Telex/blob/master/COPYING)
 [![Donate](https://img.shields.io/badge/PayPal-Donate-gray.svg?style=flat&logo=paypal&colorA=0071bb&logoColor=fff)](https://paypal.me/RafaelMardojaiCM)
 
 <p align="center"><strong>Proof of concept Telegram Client for GNOME</strong></p>
