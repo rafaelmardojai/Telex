@@ -98,6 +98,7 @@
               <object class="HdyActionRow">
                 <property name="title" translatable="yes">Keep running on background</property>
                 <property name="visible">True</property>
+                <property name="activatable_widget">run_background</property>
                 <child type="action">
                   <object class="GtkSwitch" id="run_background">
                     <property name="visible">True</property>
@@ -112,6 +113,7 @@
               <object class="HdyActionRow" id="close_dialog_row">
                 <property name="title" translatable="yes">Show alert dialog when closing window</property>
                 <property name="visible">False</property>
+                <property name="activatable_widget">close_dialog</property>
                 <child type="action">
                   <object class="GtkSwitch" id="close_dialog">
                     <property name="visible">True</property>
@@ -200,6 +202,7 @@
               <object class="HdyActionRow">
                 <property name="title" translatable="yes">Enable animations</property>
                 <property name="visible">True</property>
+                <property name="activatable_widget">animations</property>
                 <child type="action">
                   <object class="GtkSwitch" id="animations">
                     <property name="visible">True</property>
