@@ -21,6 +21,8 @@ from gi.repository import Gtk, Pango
 
 from telethon import events, utils, types
 
+from .helpers import html_to_pango
+
 from .widget_avatar import Avatar
 
 class Message(Gtk.ListBoxRow):
@@ -95,7 +97,7 @@ class Message(Gtk.ListBoxRow):
             else:
                 message_box.props.margin_left = 42
 
-        self.text = Gtk.Label(to_pango_markup(text), halign=halign, xalign=0, yalign=0)
+        self.text = Gtk.Label(html_to_pango(text), halign=halign, xalign=0, yalign=0)
         self.text.set_use_markup(True)
         self.text.set_line_wrap(True)
         self.text.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
@@ -115,10 +117,3 @@ class DayPrint(Gtk.ListBoxRow):
         Gtk.StyleContext.add_class(label.get_style_context(), 'day-title')
 
         box.pack_start(label, True, True, 0)
-
-def to_pango_markup(value):
-        value.replace("<strong>", "<b>")
-        value.replace("</strong>", "</b>")
-        value.replace("<em>", "<i>")
-        value.replace("</em>", "</i>")
-        return value

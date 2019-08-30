@@ -34,6 +34,7 @@ telex_sources = [
   'widget_avatar.py',
   'widget_dialog.py',
   'widget_message.py',
+  'helpers.py',
 ]
 
 install_data(telex_sources, install_dir: moduledir)
