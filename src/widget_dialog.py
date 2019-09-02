@@ -19,6 +19,8 @@ import math
 import cairo
 from gi.repository import Gtk, GdkPixbuf
 
+from .helpers import html_to_pango
+
 from .widget_avatar import Avatar
 
 @Gtk.Template(resource_path='/com/rafaelmardojai/Telex/dialogrow.ui')
@@ -67,5 +69,6 @@ class Dialog(Gtk.ListBoxRow):
 
         self.label_name.set_text(dialog.name)
         self.label_message_time.set_text(time)
-        self.label_message.set_text(text)
+        self.label_message.set_text(html_to_pango(text))
+        self.label_message.set_use_markup(True)
 

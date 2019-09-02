@@ -34,7 +34,6 @@ class Message(Gtk.ListBoxRow):
         header (bool) - Show header (sender name & message date)
         """
         super().__init__()
-        message.client.parse_mode = 'html'
 
         self.date = message.date.replace(tzinfo=timezone.utc).astimezone(tz=None)
         text = str(message.text)

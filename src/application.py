@@ -50,7 +50,7 @@ class TelexApplication(Gtk.Application, TelexApplicationActions):
         super().__init__(application_id='com.rafaelmardojai.Telex',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.client = client
-        self.client.add_event_handler(self.notify, events.NewMessage)
+        self.client.parse_mode = 'html'
         self.settings = TelexSettings.new()
         self.window = None
 
