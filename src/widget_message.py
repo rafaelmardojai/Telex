@@ -65,11 +65,12 @@ class Message(Gtk.ListBoxRow):
         if message.out:
             Gtk.StyleContext.add_class(message_box.get_style_context(), 'message-bubble-me')
         box.pack_start(message_box, True, True, 0)
-        if message.out:
-            message_box.props.margin_left = 40
-            box.child_set_property(message_box, 'position', 0)
-        else:
-            message_box.props.margin_right = 40
+        if not message.is_channel:
+            if message.out:
+                message_box.props.margin_left = 40
+                box.child_set_property(message_box, 'position', 0)
+            else:
+                message_box.props.margin_right = 40
             ...
 
         if not attach:
