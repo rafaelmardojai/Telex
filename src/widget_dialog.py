@@ -55,7 +55,7 @@ class Dialog(Gtk.ListBoxRow):
         if message.media:
             text += '({}) '.format(message.media.__class__.__name__)
 
-        text += str(message.text).replace("\n", " ")
+        text += str(message.raw_text).replace("\n", " ")
 
         if dialog.is_group or dialog.is_channel:
             self.icon.set_visible(True)
@@ -69,6 +69,5 @@ class Dialog(Gtk.ListBoxRow):
 
         self.label_name.set_text(dialog.name)
         self.label_message_time.set_text(time)
-        self.label_message.set_text(html_to_pango(text))
-        self.label_message.set_use_markup(True)
+        self.label_message.set_text(text)
 
