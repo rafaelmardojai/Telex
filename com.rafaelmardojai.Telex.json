@@ -48,7 +48,6 @@
             "name" : "libhandy",
             "buildsystem" : "meson",
             "config-opts": [
-                "-Dintrospection=disabled",
                 "-Dgtk_doc=false",
                 "-Dtests=false",
                 "-Dexamples=false",
@@ -63,7 +62,7 @@
                 {
                     "type" : "git",
                     "url" : "https://source.puri.sm/Librem5/libhandy.git",
-                    "branch": "libhandy-0-0"
+                    "branch" : "libhandy-0-0"
                 }
             ]
         },
