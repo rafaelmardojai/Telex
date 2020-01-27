@@ -1,6 +1,6 @@
 project('telex',  
   version: '0.0.1',
-  meson_version: '>= 0.40.0',
+  meson_version: '>= 0.50.0',
 )
 
 i18n = import('i18n')
