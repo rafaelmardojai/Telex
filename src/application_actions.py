@@ -129,7 +129,7 @@ class TelexApplicationActions:
         window.show_all()
 
     def on_contacts(self, action, param):
-        dialog = ContactsDialog(self.client)
+        dialog = ContactsDialog(self.client, self.window)
         dialog.set_transient_for(self.window)
         dialog.set_modal(True)
         dialog.present()
