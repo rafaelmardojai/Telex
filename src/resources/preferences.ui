@@ -130,35 +130,22 @@
     </child>
     <child>
       <object class="HdyPreferencesPage">
-        <property name="icon_name">preferences-system-privacy-symbolic</property>
-        <property name="title">Privacy</property>
+        <property name="icon_name">channel-secure-symbolic</property>
+        <property name="title">Privacy and Security</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
-
+            <property name="title">Privacy</property>
             <property name="visible">True</property>
             <child>
-                <object class="HdyExpanderRow" id="expander_row">
-                  <property name="title" translatable="yes">Expander row</property>
-                  <property name="visible">True</property>
-                  <child>
-                    <object class="GtkLabel">
-                      <property name="label" translatable="yes">Hello, world!</property>
-                      <property name="margin">12</property>
-                      <property name="visible">True</property>
-                    </object>
-                  </child>
-                </object>
-              </child>
+              <object class="HdyActionRow">
+                <property name="title" translatable="yes">Blocked users</property>
+                <property name="subtitle">None</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
           </object>
         </child>
-      </object>
-    </child>
-    <child>
-      <object class="HdyPreferencesPage">
-        <property name="icon_name">channel-secure-symbolic</property>
-        <property name="title">Security</property>
-        <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
             <property name="description">Control your sessions on other devices:</property>
