@@ -1,4 +1,4 @@
-# app_actions.py
+# application_actions.py
 #
 # Copyright 2019 Rafael Mardojai CM
 #
