@@ -148,7 +148,7 @@
         </child>
         <child>
           <object class="HdyPreferencesGroup">
-            <property name="description">Control your sessions on other devices:</property>
+            <property name="description">Control your sessions on other devices</property>
             <property name="title">Active sesions</property>
             <property name="visible">True</property>
             <child>
